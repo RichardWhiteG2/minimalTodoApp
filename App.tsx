@@ -1,13 +1,10 @@
 import React from 'react'
-import { SafeAreaView, View } from 'react-native'
-import { TodosList } from './src/components/TodosList'
+import { HomeScreen } from './src/screens/HomeScreen'
 
 
 const App = () => {
   return (
-    <SafeAreaView>
-      <TodosList/>
-    </SafeAreaView>
+   <HomeScreen/>
   )
 }
 

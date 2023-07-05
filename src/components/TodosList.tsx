@@ -1,9 +1,20 @@
 import React from 'react'
 import { FlatList, Text } from 'react-native'
-import { todosData } from '../data/todos'
+
 import { Todo } from './Todo'
 
-export const TodosList = () => {
+interface Todo {
+  id: number;
+  text: string;
+  isCompleted: boolean;
+  isToday: boolean;
+  hour: string;
+}
+
+interface Props {
+  todosData: Todo[];
+}
+export const TodosList = ({todosData}: Props) => {
   return (
     <FlatList
         data={todosData}
