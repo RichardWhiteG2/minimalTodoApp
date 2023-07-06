@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Image, StyleSheet, Text, Touchable, TouchableOpacity, View } from 'react-native'
+import { Image, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native'
 import { TodosList } from '../components/TodosList'
 import { todosData } from '../data/todos'
+import { useNavigation } from '@react-navigation/native';
 
 interface Todo {
     id: number;
@@ -15,6 +16,7 @@ interface Todo {
   export const HomeScreen = () => {
     const [localData, setLocalData] = useState([] as Todo[]);
     const [isHidden, setIsHidden] = useState(false);
+    const navigation = useNavigation();
       // Ordenar los datos al inicializar el componente
     const sortTodos = () => {
       const sorted = [...todosData].sort((a, b) => {
@@ -57,7 +59,10 @@ interface Todo {
         <TodosList todosData={localData.filter(todo => todo.isToday)}/>
         <Text style={styles.title}>Tomorrow</Text>
         <TodosList todosData={todosData.filter(todo => !todo.isToday)}/>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity 
+            style={styles.button}
+            onPress={()=>navigation.navigate('AddTodoScreen' as never) }
+        >
             <Text style={styles.plus}>+</Text>
         </TouchableOpacity>
     </View>
@@ -104,6 +109,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: -6,
         left:9
-    }
+    },
 
 });
