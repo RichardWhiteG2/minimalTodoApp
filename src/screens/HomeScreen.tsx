@@ -17,7 +17,6 @@ interface Todo {
     const [isHidden, setIsHidden] = useState(false);
       // Ordenar los datos al inicializar el componente
     const sortTodos = () => {
-        console.log('Se ejecuta sortTodos.')
       const sorted = [...todosData].sort((a, b) => {
         if (a.isCompleted && !b.isCompleted) {
           return 1;
