@@ -1,12 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import Todo from "../interfaces/Todo";
 
-interface Todo {
-  id: number;
-  text: string;
-  isCompleted: boolean;
-  isToday: boolean;
-  hour: string;
-}
 
 interface TodosState {
   todos: Todo[];

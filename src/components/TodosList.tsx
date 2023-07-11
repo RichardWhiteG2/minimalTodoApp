@@ -3,13 +3,6 @@ import { FlatList, Text } from 'react-native'
 
 import { Todo } from './Todo'
 
-interface Todo {
-  id: number;
-  text: string;
-  isCompleted: boolean;
-  isToday: boolean;
-  hour: string;
-}
 
 interface Props {
   todosData: Todo[];
