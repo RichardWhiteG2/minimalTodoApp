@@ -1,11 +1,40 @@
 import React, { useState } from 'react'
 import { StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useDispatch, useSelector } from 'react-redux';
+import { addTodoReducer } from '../reducers/todosSlice';
+import { useNavigation } from '@react-navigation/native';
+import { useAppDispatch, useAppSelector } from '../hooks/hooks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export const AddTodoScreen = () => {
     const [name, setName] = useState('');
     const [date, setDate] = useState(new Date());
     const [isToday, setIsToday] = useState(false);
+    const listTodos = useAppSelector( state => state.todos.todos)
+    // const dispatch= useDispatch();
+    const dispatch = useAppDispatch();
+    const navigation = useNavigation();
+
+    const addTodo = async () => {
+        const newTodo = {
+            id: Math.floor(Math.random()*1000000),
+            text: name,
+            hour: date.toString(),
+            isToday: isToday,
+            isCompleted: false,   
+        }
+        try{
+            // await AsyncStorage.setItem('@todos', JSON.stringify(newTodo));
+            await AsyncStorage.setItem('@todos', JSON.stringify([...listTodos, newTodo]));
+            dispatch(addTodoReducer(newTodo));
+            console.log('Todo saved correctly');
+            navigation.goBack();
+        }catch (e) {
+            console.log(e);
+        }
+    }
   return (
     // <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
     <View style={styles.container}>
@@ -50,7 +79,7 @@ export const AddTodoScreen = () => {
         /> */}
     </View>
     
-    <TouchableOpacity  style={styles.button}>
+    <TouchableOpacity  style={styles.button} onPress={addTodo}>
         <Text style={{color: 'white'}}>Done</Text>
     </TouchableOpacity>
     </View>
