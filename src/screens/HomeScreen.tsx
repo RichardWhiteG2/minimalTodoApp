@@ -3,6 +3,9 @@ import { Image, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View }
 import { TodosList } from '../components/TodosList'
 import { todosData } from '../data/todos'
 import { useNavigation } from '@react-navigation/native';
+import { useAppDispatch, useAppSelector } from '../hooks/hooks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { setTodosReducer } from '../reducers/todosSlice';
 
 interface Todo {
     id: number;
@@ -14,33 +17,51 @@ interface Todo {
   
   
   export const HomeScreen = () => {
-    const [localData, setLocalData] = useState([] as Todo[]);
+
+    const todos = useAppSelector( state => state.todos.todos)
+    // const [localData, setLocalData] = useState([] as Todo[]);
     const [isHidden, setIsHidden] = useState(false);
     const navigation = useNavigation();
+    const dispatch = useAppDispatch();
       // Ordenar los datos al inicializar el componente
-    const sortTodos = () => {
-      const sorted = [...todosData].sort((a, b) => {
-        if (a.isCompleted && !b.isCompleted) {
-          return 1;
-        }
-        if (!a.isCompleted && b.isCompleted) {
-          return -1;
-        }
-        return 0;
-      });
-      setLocalData(sorted);
-    };
+    // const sortTodos = () => {
+    //   const sorted = [...todosData].sort((a, b) => {
+    //     if (a.isCompleted && !b.isCompleted) {
+    //       return 1;
+    //     }
+    //     if (!a.isCompleted && b.isCompleted) {
+    //       return -1;
+    //     }
+    //     return 0;
+    //   });
+    //   setLocalData(sorted);
+    // };
+    // useEffect(() => {
+    //   sortTodos();
+    // }, []);
+
     useEffect(() => {
-      sortTodos();
-    }, []);
-    const handleHidePress = ()=>{
-        if(isHidden){
-            setIsHidden(false)
-            sortTodos();
-            return;
+      const getTodos = async ()=> {
+        try{
+          const todos = await AsyncStorage.getItem("@Todos");
+          if(todos !==null){
+            dispatch(setTodosReducer(JSON.parse(todos)));
+          }
+        } catch(e){
+          console.log(e);
         }
-        setIsHidden(!isHidden)
-        setLocalData(localData.filter(todo => !todo.isCompleted))
+      }
+      getTodos();
+    }, [])
+    
+    const handleHidePress = ()=>{
+        // if(isHidden){
+        //     setIsHidden(false)
+        //     sortTodos();
+        //     return;
+        // }
+        // setIsHidden(!isHidden)
+        // setLocalData(localData.filter(todo => !todo.isCompleted))
     } 
   return (
     <View style={styles.container}>
@@ -56,9 +77,10 @@ interface Todo {
                 <Text style={{color: '#3478f6'}}>{isHidden ? "Show Completed": "Hide Completed"}</Text>
             </TouchableOpacity>
         </View>
-        <TodosList todosData={localData.filter(todo => todo.isToday)}/>
+        {/* <TodosList todosData={localData.filter(todo => todo.isToday)}/> */}
+        <TodosList todosData={todos.filter(todo => todo.isToday)}/>
         <Text style={styles.title}>Tomorrow</Text>
-        <TodosList todosData={todosData.filter(todo => !todo.isToday)}/>
+        <TodosList todosData={todos.filter(todo => !todo.isToday)}/>
         <TouchableOpacity 
             style={styles.button}
             onPress={()=>navigation.navigate('AddTodoScreen' as never) }

@@ -27,7 +27,7 @@ export const AddTodoScreen = () => {
         }
         try{
             // await AsyncStorage.setItem('@todos', JSON.stringify(newTodo));
-            await AsyncStorage.setItem('@todos', JSON.stringify([...listTodos, newTodo]));
+            await AsyncStorage.setItem('@Todos', JSON.stringify([...listTodos, newTodo]));
             dispatch(addTodoReducer(newTodo));
             console.log('Todo saved correctly');
             navigation.goBack();
