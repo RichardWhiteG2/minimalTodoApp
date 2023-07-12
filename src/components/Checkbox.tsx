@@ -1,5 +1,8 @@
 import React from 'react'
 import { StyleSheet, Text, Touchable, TouchableOpacity, View } from 'react-native';
+import { useAppDispatch, useAppSelector } from '../hooks/hooks';
+import { updateTodoReducer } from '../reducers/todosSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface TodoProps {
     id: number;
@@ -15,8 +18,28 @@ export const Checkbox = ({
     isToday,
     hour,
 }: TodoProps) => {
+  const dispatch = useAppDispatch();
+  const listTodos = useAppSelector( state => state.todos.todos)
+
+  const handleCheckbox = () =>{
+    try{
+      dispatch(updateTodoReducer({id}));
+      
+      AsyncStorage.setItem('@Todos', JSON.stringify(
+        listTodos.map(todo => {
+          if(todo.id == id){
+            return{...todo, isCompleted: !todo.isCompleted}
+          }
+          return todo;
+        })
+      ))
+      console.log('Todo saved corectly'); 
+    }catch(e){
+      console.log(e);
+    }
+  }
   return isToday ? (
-    <TouchableOpacity style={isCompleted ? styles.checked : styles.unChecked}>
+    <TouchableOpacity  onPress={handleCheckbox} style={isCompleted ? styles.checked : styles.unChecked}>
         {isCompleted && <Text style={{fontSize:16, color:"#FAFAFA"}}>✓</Text>}
     </TouchableOpacity>
   ):(
