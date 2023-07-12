@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Image, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native'
 import { TodosList } from '../components/TodosList'
-import { todosData } from '../data/todos'
 import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../hooks/hooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { setTodosReducer } from '../reducers/todosSlice';
+import { hideCompletedReducer, setTodosReducer } from '../reducers/todosSlice';
 
 interface Todo {
     id: number;
@@ -54,13 +53,18 @@ interface Todo {
       getTodos();
     }, [])
     
-    const handleHidePress = ()=>{
-        // if(isHidden){
-        //     setIsHidden(false)
+    const handleHidePress = async ()=>{
+        if(isHidden){
+            setIsHidden(false)
+            const todos = await AsyncStorage.getItem('@Todos');
+            if (todos !==null){
+              dispatch(setTodosReducer(JSON.parse(todos)));
+            }
         //     sortTodos();
-        //     return;
-        // }
-        // setIsHidden(!isHidden)
+            return;
+        }
+        setIsHidden(true)
+        dispatch(hideCompletedReducer());
         // setLocalData(localData.filter(todo => !todo.isCompleted))
     } 
   return (
